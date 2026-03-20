@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, MessageSquare, X, Utensils, Calendar, Info } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Message } from '../types';
 import { sendMessageToGemini } from '../services/gemini';
 
@@ -111,7 +113,37 @@ export const Chat: React.FC<ChatProps> = ({ exchangeRate }) => {
                         : 'bg-white text-[#1a1a1a] rounded-tl-none border border-[#5A5A40]/5'
                     }`}
                   >
-                    {msg.text}
+                    <div className="prose prose-sm max-w-none prose-stone">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          img: ({ node, ...props }) => (
+                            <img
+                              {...props}
+                              className="w-full h-40 object-cover rounded-xl my-3 shadow-md border border-[#5A5A40]/10"
+                              referrerPolicy="no-referrer"
+                            />
+                          ),
+                          h3: ({ node, ...props }) => (
+                            <h3 {...props} className="font-serif text-lg text-[#5A5A40] mt-4 mb-2 border-b border-[#5A5A40]/20 pb-1 font-bold" />
+                          ),
+                          p: ({ node, ...props }) => (
+                            <p {...props} className="mb-2 last:mb-0" />
+                          ),
+                          strong: ({ node, ...props }) => (
+                            <strong {...props} className="text-[#5A5A40] font-bold" />
+                          ),
+                          ul: ({ node, ...props }) => (
+                            <ul {...props} className="list-disc list-inside mb-2 space-y-1" />
+                          ),
+                          li: ({ node, ...props }) => (
+                            <li {...props} className="text-gray-700" />
+                          ),
+                        }}
+                      >
+                        {msg.text}
+                      </ReactMarkdown>
+                    </div>
                   </div>
                 </motion.div>
               ))}

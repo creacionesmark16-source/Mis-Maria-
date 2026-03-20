@@ -3,7 +3,6 @@ import { Utensils, Clock, Phone, MapPin, Instagram, Facebook, ChevronRight, Shar
 import { useState, useEffect } from 'react';
 import { Chat } from './components/Chat';
 import { WhatsAppButton } from './components/WhatsAppButton';
-import { PaymentModal } from './components/PaymentModal';
 import { ShareModal } from './components/ShareModal';
 import { ReservationModal } from './components/ReservationModal';
 import { RESTAURANT_DATA } from './constants';
@@ -11,8 +10,6 @@ import { getExchangeRate, ExchangeRate } from './services/exchangeRateService';
 import { ExchangeRateBanner } from './components/ExchangeRateBanner';
 
 export default function App() {
-  const [selectedItem, setSelectedItem] = useState<{ name: string; price: string; image?: string } | null>(null);
-  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isReservationOpen, setIsReservationOpen] = useState(false);
   const [exchangeRate, setExchangeRate] = useState<ExchangeRate | null>(null);
@@ -42,11 +39,6 @@ export default function App() {
   const handleReservation = () => {
     const chatBtn = document.getElementById('chat-toggle-btn');
     if (chatBtn) chatBtn.click();
-  };
-
-  const handleItemClick = (item: { name: string; price: string; image?: string }) => {
-    setSelectedItem(item);
-    setIsPaymentOpen(true);
   };
 
   return (
@@ -150,7 +142,7 @@ export default function App() {
                   onClick={() => setIsReservationOpen(true)}
                   className="bg-brand text-white px-8 py-3 rounded-full hover:bg-brand-light transition-all shadow-lg shadow-brand/20 active:scale-95"
                 >
-                  Reservar un pedido
+                  Reservar una Mesa
                 </button>
                 <div className="text-right">
                   <span className="font-serif text-3xl text-brand font-bold block">$22.00</span>
@@ -246,7 +238,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <h3 className="font-serif text-4xl md:text-5xl mb-4">Nuestra Selección</h3>
-            <p className="text-gray-500 font-light italic mb-8">Haz clic en un plato para realizar tu pedido directamente</p>
+            <p className="text-gray-500 font-light italic mb-8">Descubre los sabores que nos definen</p>
             
             <motion.button 
               whileHover={{ scale: 1.05 }}
@@ -283,25 +275,23 @@ export default function App() {
                     <motion.div 
                       key={item.name} 
                       whileHover={{ y: -5 }}
-                      onClick={() => handleItemClick(item)}
-                      className="group cursor-pointer bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-brand/5 hover:border-brand/20"
+                      className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-brand/5"
                     >
                       {item.image && (
                         <div className="h-56 overflow-hidden relative">
                           <img 
                             src={item.image} 
                             alt={item.name} 
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             referrerPolicy="no-referrer"
                           />
-                          <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors" />
+                          <div className="absolute inset-0 bg-black/5" />
                         </div>
                       )}
                       <div className="p-6">
                         <div className="flex justify-between items-baseline mb-2">
-                          <span className="font-serif text-xl group-hover:text-brand transition-colors flex items-center gap-2">
+                          <span className="font-serif text-xl text-brand transition-colors">
                             {item.name}
-                            <ShoppingBag size={16} className="opacity-0 group-hover:opacity-100 transition-opacity text-brand" />
                           </span>
                           <div className="text-right">
                             <span className="text-brand font-serif font-bold text-lg">${item.price}</span>
@@ -406,14 +396,6 @@ export default function App() {
 
       {/* WhatsApp Button */}
       <WhatsAppButton />
-
-      {/* Payment Modal */}
-      <PaymentModal 
-        isOpen={isPaymentOpen} 
-        onClose={() => setIsPaymentOpen(false)} 
-        item={selectedItem} 
-        exchangeRate={exchangeRate?.price || null}
-      />
 
       {/* Share Modal */}
       <ShareModal 
